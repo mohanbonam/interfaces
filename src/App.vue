@@ -1,6 +1,8 @@
 <template>
   <div id="app" class="container">
     <div class="row justify-content-center">
+      <nasa-search :nasaData="nasaData"/>
+      <img :src="imgSrc" :title="imgTitle" />
       <AddAppointment @add="addItem" />
       <SearchAppointments
         @searchRecords="searchAppointments"
@@ -22,6 +24,7 @@
 import AppointmentList from "./components/AppointmentList";
 import AddAppointment from "./components/AddAppointment";
 import SearchAppointments from "./components/SearchAppointments";
+import NasaSearch from "./components/NasaSearch"
 import _ from "lodash";
 import axios from "axios";
 export default {
@@ -33,12 +36,17 @@ export default {
       filterDir: "asc",
       searchTerms: "",
       aptIndex: 0,
+      nasaData: [],
+      imgTitle: "",
+      imgSrc: ""
+
     };
   },
   components: {
     AppointmentList,
     SearchAppointments,
     AddAppointment,
+    NasaSearch
   },
   mounted() {
     axios.get("./data/appointments.json").then(
@@ -49,6 +57,11 @@ export default {
           return item;
         }))
     );
+    var apiKey = 'Jy0x5WUNcruYwdKk5AtDkBY6eWmKluKUm8AWKJuo'
+      var url = 'https://api.nasa.gov/EPIC/api/natural/images?api_key='+ apiKey
+      axios.get(url).then(res => {
+        this.nasaData = res.data
+      })
   },
   computed: {
     searchedApts() {
